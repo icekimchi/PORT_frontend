@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "24HP028"
+rootProject.name = "PortPilot"
 include(":app")
  

@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.a24hp028"
+    namespace = "com.hp028.portpilot"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.a24hp028"
+        applicationId = "com.hp028.portpilot"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

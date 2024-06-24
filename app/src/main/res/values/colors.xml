@@ -2,4 +2,19 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!--gray-->
+    <color name="gray">#696969</color>
+    <color name="deep_gray">#1B1B1B</color>
+
+    <!--blue-->
+    <color name="light_blue">#E7F1FE</color>
+    <color name="blue">#1990E6</color>
+    <color name="deep_blue">#196BE6</color>
+    <color name="accent_blue">#0C36DA</color>
+
+    <!--social-->
+    <color name="kakao">#FAE407</color>
+    <color name="facebook">#0866FF</color>
+    <color name="naver">#03C75A</color>
 </resources>
