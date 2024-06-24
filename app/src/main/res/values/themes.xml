@@ -1,9 +1,20 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme._24HP028" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Base.Theme.PortPilot" parent="Theme.AppCompat">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/white</item>
+        <item name="colorAccent">@color/blue</item>
+        <item name="android:fontFamily">@font/apple_m</item>
+        <item name="android:windowBackground">@color/white</item>
     </style>
 
-    <style name="Theme._24HP028" parent="Base.Theme._24HP028" />
+
+    <style name="Theme.PortPilot" parent="Base.Theme.PortPilot" >
+        <!-- No Title Bar-->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!-- white status bar -->
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
 </resources>
