@@ -1,20 +1,29 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.PortPilot" parent="Theme.AppCompat">
+    <style name="Base.Theme.PortPilot" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/white</item>
         <item name="colorAccent">@color/blue</item>
         <item name="android:fontFamily">@font/apple_m</item>
         <item name="android:windowBackground">@color/white</item>
-    </style>
-
-
-    <style name="Theme.PortPilot" parent="Base.Theme.PortPilot" >
         <!-- No Title Bar-->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <!-- white status bar -->
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowLightStatusBar">true</item>
+
+    </style>
+
+    <style name="SocialButtonStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:background">@drawable/social_container</item>
+        <item name="android:gravity">center</item>
+        <!-- 추가적인 스타일 속성들을 여기에 추가할 수 있습니다 -->
+    </style>
+
+    <style name="Theme.PortPilot" parent="Base.Theme.PortPilot" >
+
     </style>
 </resources>

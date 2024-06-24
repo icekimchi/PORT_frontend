@@ -21,6 +21,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".LoginActivity"
+            android:theme="@style/Theme.PortPilot">
+        </activity>
+
+        <activity
+            android:name=".SignUpActivity"
+            android:theme="@style/Theme.PortPilot">
+        </activity>
     </application>
 
 </manifest>
