@@ -47,6 +47,7 @@
         app:layout_constraintTop_toBottomOf="@id/title">
 
         <LinearLayout
+            android:id="@+id/kakaoLoginButton"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@drawable/social_container"
@@ -68,6 +69,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/facebookLoginButton"
             android:layout_width="match_parent"
             android:layout_height="41dp"
             android:background="@drawable/social_container"
@@ -91,6 +93,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/naverLoginButton"
             android:layout_width="match_parent"
             android:layout_height="41dp"
             android:background="@drawable/social_container"
@@ -114,6 +117,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/emailLoginButton"
             android:layout_width="match_parent"
             android:layout_height="41dp"
             android:background="@drawable/social_container"
@@ -139,7 +143,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/btn_without_login"
+        android:id="@+id/loginButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/social_container"
