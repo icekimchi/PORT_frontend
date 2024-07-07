@@ -60,13 +60,13 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
-    implementation(files("C:\\Users\\hyun\\Downloads\\oauth-5.9.1.aar"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
     //소셜로그인
     implementation("com.kakao.sdk:v2-all:2.11.2") // 전체 모듈 설치, 2.11.0 버전부터 지원
+    implementation("com.navercorp.nid:oauth:5.9.1")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.21")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
     implementation("androidx.appcompat:appcompat:1.4.0")
@@ -82,5 +82,4 @@ dependencies {
     implementation("com.squareup.moshi:moshi-kotlin:1.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.2.1")
     implementation("com.airbnb.android:lottie:3.1.0")
-
 }
