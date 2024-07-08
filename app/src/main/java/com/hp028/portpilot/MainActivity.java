@@ -23,15 +23,8 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         EdgeToEdge.enable(this);
         // LoginActivity로 이동
-        Intent intent = new Intent(this, LoginActivity.class);
+        Intent intent = new Intent(this, EmailLoginActivity.class);
         startActivity(intent);
         finish();
-
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
     }
 }
