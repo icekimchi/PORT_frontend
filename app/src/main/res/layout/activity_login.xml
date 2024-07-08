@@ -5,22 +5,13 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".LoginActivity">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guide_left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="20dp" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guide_right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_end="20dp" />
-
+    <include
+        layout="@layout/guideline_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/title"
@@ -46,64 +37,114 @@
         app:layout_constraintStart_toStartOf="@id/guide_left"
         app:layout_constraintTop_toBottomOf="@id/title">
 
-        <TextView
-            android:id="@+id/textView5"
+        <LinearLayout
+            android:id="@+id/kakaoLoginButton"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="10dp"
+            android:layout_height="50dp"
             android:background="@drawable/social_container"
-            android:backgroundTint="@color/kakao"
-            android:gravity="center"
-            android:text="카카오로 계속"
-            android:textColor="@color/black" />
+            android:gravity="center">
 
-        <TextView
-            android:id="@+id/textView4"
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/logo_kakao" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:gravity="center"
+                android:text="@string/start_with_kakao"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/facebookLoginButton"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="10dp"
+            android:layout_height="41dp"
             android:background="@drawable/social_container"
             android:backgroundTint="@color/facebook"
             android:gravity="center"
-            android:text="페이스북으로 계속"
-            android:textColor="@color/white" />
+            android:layout_marginTop="8dp">
 
-        <TextView
-            android:id="@+id/textView3"
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/logo_facebook" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:gravity="center"
+                android:text="@string/start_with_kakao"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/naverLoginButton"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="10dp"
+            android:layout_height="41dp"
             android:background="@drawable/social_container"
             android:backgroundTint="@color/naver"
             android:gravity="center"
-            android:text="네이버로 계속"
-            android:textColor="@color/white" />
+            android:layout_marginTop="8dp">
 
-        <TextView
-            android:id="@+id/textView2"
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/logo_naver" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:gravity="center"
+                android:text="@string/start_with_naver"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/emailLoginButton"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="10dp"
+            android:layout_height="41dp"
             android:background="@drawable/social_container"
             android:backgroundTint="@color/gray"
             android:gravity="center"
-            android:text="이메일로 계속"
-            android:textColor="@color/white" />
+            android:layout_marginTop="8dp">
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/logo_email" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:gravity="center"
+                android:text="@string/start_with_email"
+                android:textColor="@color/white" />
+        </LinearLayout>
 
     </LinearLayout>
 
     <TextView
-        android:id="@+id/btn_without_login"
+        android:id="@+id/loginButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/social_container"
         android:backgroundTint="@color/blue"
         android:gravity="center"
-        android:layout_marginTop="100dp"
         android:text="로그인하지 않고 시작"
         android:textColor="@color/white"
         app:layout_constraintTop_toBottomOf="@id/OAuth"
         app:layout_constraintEnd_toEndOf="@id/guide_right"
-        app:layout_constraintStart_toStartOf="@id/guide_left"/>
+        app:layout_constraintStart_toStartOf="@id/guide_left"
+        app:layout_constraintBottom_toBottomOf="@id/guide_bottom"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
