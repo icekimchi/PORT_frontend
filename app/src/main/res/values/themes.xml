@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.PortPilot" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Base.Theme.PortPilot" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/white</item>
         <item name="colorAccent">@color/blue</item>
@@ -21,6 +21,18 @@
         <item name="android:background">@drawable/social_container</item>
         <item name="android:gravity">center</item>
         <!-- 추가적인 스타일 속성들을 여기에 추가할 수 있습니다 -->
+    </style>
+
+    <style name="CustomErrorTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/text_input_layout_stroke_color</item>
+        <item name="boxBackgroundColor">@android:color/white</item>
+        <item name="errorTextColor">@android:color/holo_red_light</item>
+        <item name="errorIconDrawable">@null</item>
+        <item name="errorTextAppearance">@style/ErrorTextAppearance</item>
+    </style>
+
+    <style name="ErrorTextAppearance" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@android:color/holo_red_light</item>
     </style>
 
     <style name="Theme.PortPilot" parent="Base.Theme.PortPilot" >
