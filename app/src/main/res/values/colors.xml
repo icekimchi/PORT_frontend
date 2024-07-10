@@ -17,4 +17,8 @@
     <color name="kakao">#FAE407</color>
     <color name="facebook">#0866FF</color>
     <color name="naver">#03C75A</color>
+
+    <!--Error Color-->
+    <color name="error">#FF4B4B</color>
+
 </resources>

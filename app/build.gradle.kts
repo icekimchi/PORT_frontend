@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation("org.projectlombok:lombok:1.18.28")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -82,4 +83,14 @@ dependencies {
     implementation("com.squareup.moshi:moshi-kotlin:1.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.2.1")
     implementation("com.airbnb.android:lottie:3.1.0")
+
+    //retrofit2
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.google.code.gson:gson:2.10.1")
+    implementation ("com.squareup.okhttp3:logging-interceptor:3.11.0")
+
+    //lombok
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
 }
