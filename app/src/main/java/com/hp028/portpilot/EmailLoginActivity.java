@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.hp028.portpilot.api.RetrofitClient;
 import com.hp028.portpilot.api.RetrofitService;
 import com.hp028.portpilot.api.member.dto.LoginRequestDto;
 import com.hp028.portpilot.api.member.dto.LoginResponseDto;
@@ -19,6 +20,7 @@ import com.hp028.portpilot.databinding.ToolbarBinding;
 
 import java.util.regex.Pattern;
 
+import lombok.RequiredArgsConstructor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -31,7 +33,7 @@ public class EmailLoginActivity extends AppCompatActivity {
     private EditText ed_user_name, ed_user_email, ed_user_password;
     private TextView btn_start;
     private boolean showMenu;
-    private RetrofitService service;
+    private final RetrofitService service = RetrofitClient.getClient().create(RetrofitService.class);
 
     private static final String NAME_PATTERN = "^[가-힣]{2,10}$"; // 이름 패턴 (한글만, 2글자 이상 10글자 이하)
     private static final String EMAIL_PATTERN = "^[A-Za-z0-9+_.-]+@(.+)$"; // 이메일 패턴
@@ -85,6 +87,13 @@ public class EmailLoginActivity extends AppCompatActivity {
         if (isValid) {
             // 모든 유효성 검사를 통과했을 때 로그인 또는 다음 단계로 진행
             // TODO: 로그인 로직 구현
+            LoginRequestDto signUpData = new LoginRequestDto(
+                    ed_user_email.getText().toString().trim(),
+                    ed_user_name.getText().toString().trim(),
+                    ed_user_password.getText().toString()
+            );
+            Login(signUpData);
+
         }
     }
 
@@ -92,7 +101,17 @@ public class EmailLoginActivity extends AppCompatActivity {
         service.memberLogin(data).enqueue(new Callback<LoginResponseDto>() {
             @Override
             public void onResponse(Call<LoginResponseDto> call, Response<LoginResponseDto> response) {
-                LoginResponseDto result = response.body();
+                if (response.isSuccessful() && response.body() != null) {
+                    LoginResponseDto result = response.body();
+                    if (result.getStatus() == 201) {
+                        Toast.makeText(EmailLoginActivity.this, result.getMessage(), Toast.LENGTH_SHORT).show();
+                        // TODO: 회원가입 성공 후 처리 (예: 로그인 화면으로 이동)
+                    } else {
+                        Toast.makeText(EmailLoginActivity.this, "회원가입 실패: " + result.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(EmailLoginActivity.this, "회원가입 실패", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
