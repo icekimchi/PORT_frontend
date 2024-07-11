@@ -3,7 +3,7 @@ package com.hp028.portpilot.api.member.dto;
 import lombok.Getter;
 
 @Getter
-public class LoginResponseDto {
+public class SignupResponseDto {
     private int status;
     private String message;
     private LoginResponseBody body;
@@ -13,3 +13,5 @@ public class LoginResponseDto {
         private String name;
     }
 }
+
+

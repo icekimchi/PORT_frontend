@@ -2,18 +2,20 @@ package com.hp028.portpilot.api.member.dto;
 
 import com.google.gson.annotations.SerializedName;
 
-public class LoginRequestDto {
-    @SerializedName("email")
-    private String memberId;
-    @SerializedName("name")
-    private String memberPw;
+import lombok.Getter;
 
+@Getter
+public class SignupRequestDto {
+    @SerializedName("email")
+    private String email;
+    @SerializedName("name")
+    private String name;
     @SerializedName("password")
     private String password;
 
-    public LoginRequestDto(String memberId, String memberPw, String password) {
-        this.memberId = memberId;
-        this.memberPw = memberPw;
+    public SignupRequestDto(String memberId, String memberPw, String password) {
+        this.email = memberId;
+        this.name = memberPw;
         this.password = password;
     }
 }

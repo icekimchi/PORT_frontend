@@ -3,14 +3,26 @@ package com.hp028.portpilot.socialloginmanager;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.hp028.portpilot.BuildConfig;
+import com.hp028.portpilot.EmailLoginActivity;
+import com.hp028.portpilot.api.RetrofitClient;
+import com.hp028.portpilot.api.RetrofitService;
+import com.hp028.portpilot.api.member.dto.OAuthLoginRequestDto;
+import com.hp028.portpilot.api.member.dto.OAuthLoginResponseDto;
+import com.hp028.portpilot.api.member.dto.SignInRequestDto;
+import com.hp028.portpilot.api.member.dto.SignupResponseDto;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.common.KakaoSdk;
 import com.kakao.sdk.common.model.ClientError;
 import com.kakao.sdk.common.model.ClientErrorCause;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.User;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class KakaoLoginManager {
     private static final String TAG = "KakaoLoginManager";
