@@ -3,22 +3,36 @@ package com.hp028.portpilot;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.hp028.portpilot.api.RetrofitClient;
+import com.hp028.portpilot.api.RetrofitService;
+import com.hp028.portpilot.api.member.dto.OAuthLoginRequestDto;
+import com.hp028.portpilot.api.member.dto.OAuthLoginResponseDto;
+import com.hp028.portpilot.api.member.dto.SignInRequestDto;
+import com.hp028.portpilot.api.member.dto.SignupResponseDto;
 import com.hp028.portpilot.databinding.ActivityLoginBinding;
 import com.hp028.portpilot.socialloginmanager.KakaoLoginManager;
 import com.hp028.portpilot.socialloginmanager.NaverLoginManager;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.model.User;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class LoginActivity extends AppCompatActivity {
 
     private ActivityLoginBinding binding;
     private static final String TAG = "LoginActivity";
+    private final RetrofitService service = RetrofitClient.getClient().create(RetrofitService.class);
     private KakaoLoginManager kakaoLoginManager;
+    private final TokenManager tokenManager = TokenManager.getInstance(this);
+    private NaverLoginManager naverLoginManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // 초기화
         kakaoLoginManager = KakaoLoginManager.getInstance();
+        naverLoginManager = NaverLoginManager.getInstance(this);
         kakaoLoginManager.initialize(this);
         NaverLoginManager.initialize(this);
 
@@ -44,7 +59,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(OAuthToken token) {
                 Log.i(TAG, "카카오 로그인 성공: " + token.getAccessToken());
-                requestKakaoUserInfo();
+
+                kakaoSocialLogin(token.getAccessToken());
             }
 
             @Override
@@ -54,22 +70,35 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void requestKakaoUserInfo() {
-        kakaoLoginManager.requestUserInfo(new KakaoLoginManager.KakaoUserInfoCallback() {
+    private void kakaoSocialLogin(String token){
+        service.memberOAuthSignIn("KAKAO", token).enqueue(new Callback<OAuthLoginResponseDto>() {
             @Override
-            public void onSuccess(User user) {
-                Log.i(TAG, "카카오 사용자 정보 요청 성공" +
-                        "\n이름: " + (user.getKakaoAccount().getName() != null ? user.getKakaoAccount().getName() : "N/A") +
-                        "\n이메일: " + (user.getKakaoAccount() != null ? user.getKakaoAccount().getEmail() : "N/A"));
-                // TODO: 사용자 정보를 활용하여 추가 작업 수행
+            public void onResponse(Call<OAuthLoginResponseDto> call, Response<OAuthLoginResponseDto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    OAuthLoginResponseDto result = response.body();
+                    if (result.getStatus() == 201 || result.getStatus() == 202) {
+                        tokenManager.saveJwt(result.getJwt());
+
+                        Toast.makeText(LoginActivity.this, "jwt 저장", Toast.LENGTH_SHORT).show();
+                        // TODO 로그인 후 채팅방 화면으로 이동
+
+                    } else {
+                        Toast.makeText(LoginActivity.this, "카카오 소셜로그인 에러", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(LoginActivity.this, "회원가입 실패", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
-            public void onFailure(Throwable error) {
-                Log.e(TAG, "카카오 사용자 정보 요청 실패", error);
+            public void onFailure(Call<OAuthLoginResponseDto> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, "회원가입 에러 발생", Toast.LENGTH_SHORT).show();
+                Log.e("회원가입 에러 발생", t.getMessage());
             }
         });
     }
+
+
 
     private final ActivityResultLauncher<Intent> naverLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -77,6 +106,7 @@ public class LoginActivity extends AppCompatActivity {
                 NaverLoginManager.handleLoginResult(result.getResultCode(), new NaverLoginManager.NaverLoginCallback() {
                     @Override
                     public void onSuccess(String accessToken) {
+                        naverLoginManager.naverSocialLogin(accessToken, LoginActivity.this);
                         Log.i(TAG, "네이버 로그인 성공: " + accessToken);
                         // TODO: 추가 작업 수행
                     }
@@ -95,6 +125,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void performEmailLogin() {
         // 이메일 로그인 로직 구현
+        Intent intent = new Intent(this, EmailLoginActivity.class);
+        startActivity(intent);
     }
 
     private void navigateToLogin() {

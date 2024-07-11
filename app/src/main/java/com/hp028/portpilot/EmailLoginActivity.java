@@ -13,26 +13,29 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hp028.portpilot.api.RetrofitClient;
 import com.hp028.portpilot.api.RetrofitService;
-import com.hp028.portpilot.api.member.dto.LoginRequestDto;
-import com.hp028.portpilot.api.member.dto.LoginResponseDto;
+import com.hp028.portpilot.api.member.dto.SignInRequestDto;
+import com.hp028.portpilot.api.member.dto.SignInResponseDto;
+import com.hp028.portpilot.api.member.dto.SignupRequestDto;
+import com.hp028.portpilot.api.member.dto.SignupResponseDto;
 import com.hp028.portpilot.databinding.ActivityEmailLoginBinding;
 import com.hp028.portpilot.databinding.ToolbarBinding;
 
 import java.util.regex.Pattern;
 
-import lombok.RequiredArgsConstructor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class EmailLoginActivity extends AppCompatActivity {
 
+    private TokenManager tokenManager;
     private ActivityEmailLoginBinding binding;
     private ToolbarBinding toolbar;
     private TextInputLayout til_user_name, til_user_email, til_user_password;
     private EditText ed_user_name, ed_user_email, ed_user_password;
     private TextView btn_start;
     private boolean showMenu;
+    private static final String TAG = "EmailLoginActivity";
     private final RetrofitService service = RetrofitClient.getClient().create(RetrofitService.class);
 
     private static final String NAME_PATTERN = "^[가-힣]{2,10}$"; // 이름 패턴 (한글만, 2글자 이상 10글자 이하)
@@ -45,6 +48,7 @@ public class EmailLoginActivity extends AppCompatActivity {
         binding = ActivityEmailLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        tokenManager = TokenManager.getInstance(this);
         setupToolbar("회원가입", false); //툴바 설정
 
         til_user_name = binding.tilUserName;
@@ -87,27 +91,33 @@ public class EmailLoginActivity extends AppCompatActivity {
         if (isValid) {
             // 모든 유효성 검사를 통과했을 때 로그인 또는 다음 단계로 진행
             // TODO: 로그인 로직 구현
-            LoginRequestDto signUpData = new LoginRequestDto(
+            SignupRequestDto signUpData = new SignupRequestDto(
                     ed_user_email.getText().toString().trim(),
                     ed_user_name.getText().toString().trim(),
                     ed_user_password.getText().toString()
             );
-            Login(signUpData);
-
+            SignUp(signUpData);
         }
     }
 
-    private void Login(LoginRequestDto data){
-        service.memberLogin(data).enqueue(new Callback<LoginResponseDto>() {
+    private void SignUp(SignupRequestDto data){
+        service.memberSignUp(data).enqueue(new Callback<SignupResponseDto>() {
             @Override
-            public void onResponse(Call<LoginResponseDto> call, Response<LoginResponseDto> response) {
+            public void onResponse(Call<SignupResponseDto> call, Response<SignupResponseDto> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    LoginResponseDto result = response.body();
+                    SignupResponseDto result = response.body();
                     if (result.getStatus() == 201) {
                         Toast.makeText(EmailLoginActivity.this, result.getMessage(), Toast.LENGTH_SHORT).show();
-                        // TODO: 회원가입 성공 후 처리 (예: 로그인 화면으로 이동)
+                        Log.i(TAG, result.getBody().toString());
+
+                        SignInRequestDto signInData = new SignInRequestDto(
+                                data.getEmail(),
+                                data.getPassword()
+                        );
+                        SignIn(signInData);
+
                     } else {
-                        Toast.makeText(EmailLoginActivity.this, "회원가입 실패: " + result.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EmailLoginActivity.this, result.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(EmailLoginActivity.this, "회원가입 실패", Toast.LENGTH_SHORT).show();
@@ -115,7 +125,38 @@ public class EmailLoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<LoginResponseDto> call, Throwable t) {
+            public void onFailure(Call<SignupResponseDto> call, Throwable t) {
+                Toast.makeText(EmailLoginActivity.this, "회원가입 에러 발생", Toast.LENGTH_SHORT).show();
+                Log.e("회원가입 에러 발생", t.getMessage());
+            }
+        });
+    }
+
+    private void SignIn(SignInRequestDto data){
+        service.memberSignIn(data).enqueue(new Callback<SignInResponseDto>() {
+            @Override
+            public void onResponse(Call<SignInResponseDto> call, Response<SignInResponseDto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    SignInResponseDto result = response.body();
+                    if (result.getStatus() == 202) {
+                        String jwtToken = response.headers().get("Authorization");
+                        if (jwtToken != null && jwtToken.startsWith("Bearer ")) {
+                            tokenManager.saveJwt(jwtToken);
+
+                            Toast.makeText(EmailLoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
+                            Log.i(TAG, "JWT Token saved: " + jwtToken);
+                        }
+                        // TODO: 회원가입 성공 후 처리 (예: 로그인 화면으로 이동)
+                    } else {
+                        Toast.makeText(EmailLoginActivity.this, result.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(EmailLoginActivity.this, "회원가입 실패", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SignInResponseDto> call, Throwable t) {
                 Toast.makeText(EmailLoginActivity.this, "회원가입 에러 발생", Toast.LENGTH_SHORT).show();
                 Log.e("회원가입 에러 발생", t.getMessage());
             }
