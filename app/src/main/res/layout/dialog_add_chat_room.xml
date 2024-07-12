@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/box_dialog"
+    android:backgroundTint="@color/white"
+    android:paddingHorizontal="24dp"
+    android:paddingTop="35dp"
+    android:paddingBottom="20dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="채팅방 추가"
+        android:textColor="@color/black"
+        android:textSize="18dp"
+        android:layout_marginBottom="40dp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="채팅방 제목"
+        style="@style/myInputLayout"
+        android:textColorHint="@color/gray"
+        app:endIconMode="clear_text">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edt_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="24dp"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/myInputLayout"
+        android:textColorHint="@color/gray"
+        android:hint="채팅방 설명"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:layout_marginBottom="24dp"
+        app:boxBackgroundColor="@color/white">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edt_description"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textMultiLine"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="13dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:orientation="horizontal">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/cancel_button"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:layout_marginRight="5dp"
+            android:text="취소"
+            android:textSize="14dp"
+            android:stateListAnimator="@null"
+            android:backgroundTint="#f2f3f4"
+            android:textColor="@color/deep_gray"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/check_button"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp"
+            android:text="추가"
+            android:textSize="14dp"
+            android:stateListAnimator="@null"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/deep_blue"/>
+    </LinearLayout>
+</LinearLayout>

@@ -1,5 +1,6 @@
 package com.hp028.portpilot;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -36,7 +37,7 @@ public class EmailLoginActivity extends AppCompatActivity {
     private TextView btn_start;
     private boolean showMenu;
     private static final String TAG = "EmailLoginActivity";
-    private final RetrofitService service = RetrofitClient.getClient().create(RetrofitService.class);
+    RetrofitService service = RetrofitClient.getApiService(this);
 
     private static final String NAME_PATTERN = "^[가-힣]{2,10}$"; // 이름 패턴 (한글만, 2글자 이상 10글자 이하)
     private static final String EMAIL_PATTERN = "^[A-Za-z0-9+_.-]+@(.+)$"; // 이메일 패턴
@@ -48,7 +49,7 @@ public class EmailLoginActivity extends AppCompatActivity {
         binding = ActivityEmailLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        tokenManager = TokenManager.getInstance(this);
+        tokenManager =  TokenManager.getInstance(this);
         setupToolbar("회원가입", false); //툴바 설정
 
         til_user_name = binding.tilUserName;
@@ -144,7 +145,10 @@ public class EmailLoginActivity extends AppCompatActivity {
                             tokenManager.saveJwt(jwtToken);
 
                             Toast.makeText(EmailLoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
-                            Log.i(TAG, "JWT Token saved: " + jwtToken);
+                            Log.i(TAG, "JWT Token saved: " + tokenManager.getJwtToken());
+                            Intent intent = new Intent(EmailLoginActivity.this, ChatRoomActivity.class);
+                            startActivity(intent);
+
                         }
                         // TODO: 회원가입 성공 후 처리 (예: 로그인 화면으로 이동)
                     } else {

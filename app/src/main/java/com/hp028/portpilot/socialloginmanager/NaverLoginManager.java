@@ -27,14 +27,15 @@ public class NaverLoginManager {
     private final TokenManager tokenManager;
     private final RetrofitService service;
 
+
     private NaverLoginManager(Context context) {
         this.tokenManager = TokenManager.getInstance(context);
-        this.service = RetrofitClient.getClient().create(RetrofitService.class);
+        this.service = RetrofitClient.getApiService(context);
     }
 
-    public static synchronized NaverLoginManager getInstance(Context context) {
+    public static NaverLoginManager getInstance(Context context) {
         if (instance == null) {
-            instance = new NaverLoginManager(context.getApplicationContext());
+            instance = new NaverLoginManager(context);
         }
         return instance;
     }

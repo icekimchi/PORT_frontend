@@ -6,9 +6,9 @@ import lombok.Getter;
 public class SignupResponseDto {
     private int status;
     private String message;
-    private LoginResponseBody body;
+    private SignUpResponseBody body;
 
-    public static class LoginResponseBody {
+    public static class SignUpResponseBody {
         private String email;
         private String name;
     }
