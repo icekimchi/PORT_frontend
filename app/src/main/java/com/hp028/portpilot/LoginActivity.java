@@ -29,9 +29,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private ActivityLoginBinding binding;
     private static final String TAG = "LoginActivity";
-    private final RetrofitService service = RetrofitClient.getClient().create(RetrofitService.class);
     private KakaoLoginManager kakaoLoginManager;
-    private final TokenManager tokenManager = TokenManager.getInstance(this);
     private NaverLoginManager naverLoginManager;
 
     @Override
@@ -42,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "> LoginActivity");
 
         // 초기화
-        kakaoLoginManager = KakaoLoginManager.getInstance();
+        kakaoLoginManager = KakaoLoginManager.getInstance(this);
         naverLoginManager = NaverLoginManager.getInstance(this);
         kakaoLoginManager.initialize(this);
         NaverLoginManager.initialize(this);
@@ -59,45 +57,30 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(OAuthToken token) {
                 Log.i(TAG, "카카오 로그인 성공: " + token.getAccessToken());
+                kakaoLoginManager.kakaoSocialLogin(token.getAccessToken(), new KakaoLoginManager.SocialLoginCallback() {
+                    @Override
+                    public void onSuccess(String message) {
+                        Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
+                        // TODO: 로그인 후 채팅방 화면으로 이동
+                        Intent intent = new Intent(LoginActivity.this, ChatRoomActivity.class);
+                        startActivity(intent);
+                        finish(); // 현재 LoginActivity를 종료 (선택사항)
+                    }
 
-                kakaoSocialLogin(token.getAccessToken());
+                    @Override
+                    public void onFailure(String error) {
+                        Toast.makeText(LoginActivity.this, error, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override
             public void onFailure(Throwable error) {
                 Log.e(TAG, "카카오 로그인 실패", error);
+                Toast.makeText(LoginActivity.this, "카카오 로그인 실패", Toast.LENGTH_SHORT).show();
             }
         });
     }
-
-    private void kakaoSocialLogin(String token){
-        service.memberOAuthSignIn("KAKAO", token).enqueue(new Callback<OAuthLoginResponseDto>() {
-            @Override
-            public void onResponse(Call<OAuthLoginResponseDto> call, Response<OAuthLoginResponseDto> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    OAuthLoginResponseDto result = response.body();
-                    if (result.getStatus() == 201 || result.getStatus() == 202) {
-                        tokenManager.saveJwt(result.getJwt());
-
-                        Toast.makeText(LoginActivity.this, "jwt 저장", Toast.LENGTH_SHORT).show();
-                        // TODO 로그인 후 채팅방 화면으로 이동
-
-                    } else {
-                        Toast.makeText(LoginActivity.this, "카카오 소셜로그인 에러", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(LoginActivity.this, "회원가입 실패", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<OAuthLoginResponseDto> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "회원가입 에러 발생", Toast.LENGTH_SHORT).show();
-                Log.e("회원가입 에러 발생", t.getMessage());
-            }
-        });
-    }
-
 
 
     private final ActivityResultLauncher<Intent> naverLauncher = registerForActivityResult(
@@ -109,6 +92,9 @@ public class LoginActivity extends AppCompatActivity {
                         naverLoginManager.naverSocialLogin(accessToken, LoginActivity.this);
                         Log.i(TAG, "네이버 로그인 성공: " + accessToken);
                         // TODO: 추가 작업 수행
+                        Intent intent = new Intent(LoginActivity.this, ChatRoomActivity.class);
+                        startActivity(intent);
+                        finish(); // 현재 LoginActivity를 종료 (선택사항)
                     }
 
                     @Override

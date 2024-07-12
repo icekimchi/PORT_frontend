@@ -1,5 +1,6 @@
 package com.hp028.portpilot.api;
 
+import com.hp028.portpilot.api.chat.dto.ChatRoomResponse;
 import com.hp028.portpilot.api.member.dto.OAuthLoginRequestDto;
 import com.hp028.portpilot.api.member.dto.OAuthLoginResponseDto;
 import com.hp028.portpilot.api.member.dto.SignInRequestDto;
@@ -23,5 +24,8 @@ public interface RetrofitService {
 
     @POST("/api/member/oauth/{provider}")
     Call<OAuthLoginResponseDto> memberOAuthSignIn(@Path ("provider") String provider, @Body String data);
+
+    @POST("/api/chatrooms")
+    Call<ChatRoomResponse> createChatRoom(@Body String data);
 
 }

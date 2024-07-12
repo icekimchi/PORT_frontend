@@ -95,4 +95,6 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.24")
     testCompileOnly("org.projectlombok:lombok:1.18.24")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.24")
+
+    implementation ("androidx.recyclerview:recyclerview:1.3.1")
 }
