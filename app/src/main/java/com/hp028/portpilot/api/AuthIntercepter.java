@@ -1,5 +1,9 @@
 package com.hp028.portpilot.api;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
+import android.util.Log;
+
 import com.hp028.portpilot.TokenManager;
 
 import okhttp3.Interceptor;
@@ -22,10 +26,7 @@ public class AuthIntercepter implements Interceptor {
         Request original = chain.request();
         Request.Builder requestBuilder = original.newBuilder();
 
-        // Custom header to check if JWT token is required
-        String requiresAuth = original.header("Requires-Auth");
-        if (requiresAuth != null && requiresAuth.equals("true")) {
-            // TokenManager에서 JWT 토큰 가져오기
+        if(tokenManager.containsKey("jwt")){
             String token = tokenManager.getJwtToken();
             if (token != null) {
                 // 헤더에 토큰 추가
@@ -33,8 +34,7 @@ public class AuthIntercepter implements Interceptor {
             }
         }
 
-        Request request = requestBuilder
-                .removeHeader("Requires-Auth") // Remove custom header before sending the request
+        Request request = requestBuilder// Remove custom header before sending the request
                 .build();
         return chain.proceed(request);
     }

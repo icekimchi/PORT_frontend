@@ -74,9 +74,9 @@ public class ChatRoomActivity extends AppCompatActivity {
             if (chatRoomName.isEmpty()) {
                 chatRoomName = "새 채팅방";
             }
-            //createChatRoom(chatRoomName);
-            chatRoomList.add(chatRoomName);
-            adapter.notifyDataSetChanged();
+            createChatRoom(chatRoomName);
+            //chatRoomList.add(chatRoomName);
+//            adapter.notifyDataSetChanged();
             dialog.dismiss();
         });
 

@@ -41,4 +41,8 @@ public class TokenManager {
     public void clearTokens() {
         preferences.edit().remove(KEY_ACCESS_TOKEN).remove(KEY_JWT).apply();
     }
+
+    public boolean containsKey(String key) {
+        return preferences.contains(key);
+    }
 }
