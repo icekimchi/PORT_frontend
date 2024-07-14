@@ -134,7 +134,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/loginButton"
+        android:id="@+id/startButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/social_container"
@@ -146,5 +146,20 @@
         app:layout_constraintEnd_toEndOf="@id/guide_right"
         app:layout_constraintStart_toStartOf="@id/guide_left"
         app:layout_constraintBottom_toBottomOf="@id/guide_bottom"/>
+
+    <TextView
+        android:id="@+id/loginButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/social_container"
+        android:backgroundTint="@color/gray"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:text="기존 계정으로 로그인"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/startButton"
+        app:layout_constraintEnd_toEndOf="@id/guide_right"
+        app:layout_constraintStart_toStartOf="@id/guide_left"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
