@@ -21,7 +21,8 @@ public class MainActivity extends AppCompatActivity {
         NaverIdLoginSDK.INSTANCE.initialize(this, BuildConfig.NAVER_CLIENT_ID, BuildConfig.NAVER_CLIENT_SECRET, BuildConfig.NAVER_CLIENT_NAME);
 
         EdgeToEdge.enable(this);
-        TokenManager.getInstance(this);
+        TokenManager tokenManager = TokenManager.getInstance(this);
+        tokenManager.clearTokens();
         // LoginActivity로 이동
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
