@@ -49,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         binding.kakaoLoginButton.setOnClickListener(v -> performKakaoLogin());
         binding.naverLoginButton.setOnClickListener(v -> performNaverLogin());
         binding.emailLoginButton.setOnClickListener(v -> performEmailLogin());
+        binding.startButton.setOnClickListener(v -> navigateToLogin());
         binding.loginButton.setOnClickListener(v -> navigateToLogin());
     }
 
@@ -116,7 +117,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void navigateToLogin() {
-        // 로그인 화면으로 이동하는 로직 구현
+        Intent intent = new Intent(this, LoginWithAccountActivity.class);
+        startActivity(intent);
     }
 
     @Override

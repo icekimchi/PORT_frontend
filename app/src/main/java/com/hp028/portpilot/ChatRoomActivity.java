@@ -1,11 +1,9 @@
 package com.hp028.portpilot;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -15,8 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.hp028.portpilot.adapter.ChatRoomAdapter;
 import com.hp028.portpilot.api.RetrofitClient;
 import com.hp028.portpilot.api.RetrofitService;
-import com.hp028.portpilot.api.chat.dto.ChatRoomResponse;
-import com.hp028.portpilot.api.member.dto.OAuthLoginResponseDto;
+import com.hp028.portpilot.api.chat.dto.CreateChatRoomResponse;
+import com.hp028.portpilot.api.chat.dto.GetChatRoomResponse;
 import com.hp028.portpilot.databinding.ActivityChatroomBinding;
 import com.hp028.portpilot.databinding.DialogAddChatRoomBinding;
 import com.hp028.portpilot.databinding.ToolbarBinding;
@@ -33,7 +31,7 @@ public class ChatRoomActivity extends AppCompatActivity {
     private static final String TAG = "ChatRoomActivity";
     private ToolbarBinding toolbar;
     private boolean showMenu;
-    private List<String> chatRoomList;
+    private List<GetChatRoomResponse.GetChatRoomResponseBody> chatRoomList;
     private ChatRoomAdapter adapter;
     RetrofitService service = RetrofitClient.getApiService(this);
 
@@ -44,22 +42,16 @@ public class ChatRoomActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         Log.d(TAG, "> ChatRoomActivity");
 
-        setupToolbar("PortMIS", true); //툴바 설정
+        setupToolbar("PortMIS", true); // 툴바 설정
         chatRoomList = new ArrayList<>();
-        adapter = new ChatRoomAdapter(chatRoomList);
-        binding.recyclerView.setAdapter(adapter);
-
-        chatRoomList = new ArrayList<>();
-        adapter = new ChatRoomAdapter(chatRoomList);
+        adapter = new ChatRoomAdapter(chatRoomList, this::onChatRoomSelected);
         binding.recyclerView.setAdapter(adapter);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        binding.addChatRoomButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAddChatRoomDialog();
-            }
-        });
+        binding.addChatRoomButton.setOnClickListener(v -> showAddChatRoomDialog());
+
+        // 채팅방 목록을 서버에서 가져와서 설정하는 함수 호출
+        fetchChatRooms();
     }
 
     private void showAddChatRoomDialog() {
@@ -74,9 +66,7 @@ public class ChatRoomActivity extends AppCompatActivity {
             if (chatRoomName.isEmpty()) {
                 chatRoomName = "새 채팅방";
             }
-            //createChatRoom(chatRoomName);
-            chatRoomList.add(chatRoomName);
-            adapter.notifyDataSetChanged();
+            createChatRoom(chatRoomName);
             dialog.dismiss();
         });
 
@@ -86,23 +76,58 @@ public class ChatRoomActivity extends AppCompatActivity {
     }
 
     private void createChatRoom(String chatRoomName) {
-        service.createChatRoom(chatRoomName).enqueue(new Callback<ChatRoomResponse>() {
+        service.createChatRoom(chatRoomName).enqueue(new Callback<CreateChatRoomResponse>() {
             @Override
-            public void onResponse(Call<ChatRoomResponse> call, Response<ChatRoomResponse> response) {
+            public void onResponse(Call<CreateChatRoomResponse> call, Response<CreateChatRoomResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    ChatRoomResponse result = response.body();
-                    if (result.getStatus() == 201){
-                        chatRoomList.add(chatRoomName);
+                    CreateChatRoomResponse result = response.body();
+                    if (result.getStatus() == 201) {
+                        // 새로 생성된 채팅방을 리스트에 추가
+                        CreateChatRoomResponse.ChatRoomResponseBody newChatRoom = result.getBody();
+
+                        // GetChatRoomResponseBody와 호환되는 형태로 변환
+                        GetChatRoomResponse.GetChatRoomResponseBody newChatRoomResponse = new GetChatRoomResponse.GetChatRoomResponseBody();
+                        newChatRoomResponse.setId(newChatRoom.getId());
+                        newChatRoomResponse.setRoomName(newChatRoom.getRoomName());
+
+                        chatRoomList.add(newChatRoomResponse);
                         adapter.notifyDataSetChanged();
                     }
                 }
             }
 
             @Override
-            public void onFailure(Call<ChatRoomResponse> call, Throwable t) {
+            public void onFailure(Call<CreateChatRoomResponse> call, Throwable t) {
                 Log.e("채팅방 생성 오류 발생", t.getMessage());
             }
         });
+    }
+
+    private void fetchChatRooms() {
+        service.getChatRoom().enqueue(new Callback<GetChatRoomResponse>() {
+            @Override
+            public void onResponse(Call<GetChatRoomResponse> call, Response<GetChatRoomResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getStatus() == 200) {
+                    chatRoomList.clear();
+                    chatRoomList.addAll(response.body().getBody());
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetChatRoomResponse> call, Throwable t) {
+                Log.e(TAG, "채팅방 목록 불러오기 오류 발생");
+            }
+        });
+    }
+
+
+    // 채팅방 클릭 시 해당 채팅방의 roomId를 사용하여 ChatActivity로 이동
+    private void onChatRoomSelected(GetChatRoomResponse.GetChatRoomResponseBody chatRoom) {
+//        Intent intent = new Intent(this, ChatActivity.class);
+//        intent.putExtra("roomId", chatRoom.getRoomId());
+//        intent.putExtra("roomName", chatRoom.getRoomName());
+//        startActivity(intent);
     }
 
     protected void setupToolbar(String title, boolean showMenu) {

@@ -49,6 +49,8 @@
             android:theme="@style/Theme.PortPilot"></activity>
         <activity android:name=".ChatRoomActivity"
             android:theme="@style/Theme.PortPilot"></activity>
+        <activity android:name=".LoginWithAccountActivity"
+            android:theme="@style/Theme.PortPilot"></activity>
 
     </application>
 
