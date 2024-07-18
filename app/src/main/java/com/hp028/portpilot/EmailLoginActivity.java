@@ -37,7 +37,7 @@ public class EmailLoginActivity extends AppCompatActivity {
     private TextView btn_start;
     private boolean showMenu;
     private static final String TAG = "EmailLoginActivity";
-    RetrofitService service = RetrofitClient.getApiService(this);
+    private RetrofitService service;
 
     private static final String NAME_PATTERN = "^[가-힣]{2,10}$"; // 이름 패턴 (한글만, 2글자 이상 10글자 이하)
     private static final String EMAIL_PATTERN = "^[A-Za-z0-9+_.-]+@(.+)$"; // 이메일 패턴
@@ -49,7 +49,8 @@ public class EmailLoginActivity extends AppCompatActivity {
         binding = ActivityEmailLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        tokenManager =  TokenManager.getInstance(this);
+        tokenManager = TokenManager.getInstance(getApplicationContext());
+        service = RetrofitClient.getApiService(this);
         setupToolbar("회원가입", false); //툴바 설정
 
         til_user_name = binding.tilUserName;

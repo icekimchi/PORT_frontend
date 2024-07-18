@@ -33,12 +33,13 @@ public class ChatRoomActivity extends AppCompatActivity {
     private boolean showMenu;
     private List<GetChatRoomResponse.GetChatRoomResponseBody> chatRoomList;
     private ChatRoomAdapter adapter;
-    RetrofitService service = RetrofitClient.getApiService(this);
+    private RetrofitService service;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityChatroomBinding.inflate(getLayoutInflater());
+        service = RetrofitClient.getApiService(this);
         setContentView(binding.getRoot());
         Log.d(TAG, "> ChatRoomActivity");
 
@@ -124,10 +125,10 @@ public class ChatRoomActivity extends AppCompatActivity {
 
     // 채팅방 클릭 시 해당 채팅방의 roomId를 사용하여 ChatActivity로 이동
     private void onChatRoomSelected(GetChatRoomResponse.GetChatRoomResponseBody chatRoom) {
-//        Intent intent = new Intent(this, ChatActivity.class);
-//        intent.putExtra("roomId", chatRoom.getRoomId());
-//        intent.putExtra("roomName", chatRoom.getRoomName());
-//        startActivity(intent);
+        Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra("roomId", chatRoom.getId());
+        intent.putExtra("roomName", chatRoom.getRoomName());
+        startActivity(intent);
     }
 
     protected void setupToolbar(String title, boolean showMenu) {
