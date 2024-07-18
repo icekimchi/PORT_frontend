@@ -38,7 +38,7 @@ public class LoginWithAccountActivity extends AppCompatActivity {
     private static final String NAME_PATTERN = "^[가-힣]{2,10}$"; // 이름 패턴 (한글만, 2글자 이상 10글자 이하)
     private static final String EMAIL_PATTERN = "^[A-Za-z0-9+_.-]+@(.+)$"; // 이메일 패턴
     private static final String PASSWORD_PATTERN = "^.{8,20}$";// 비밀번호 패턴 (8글자 이상 20글자 이하)
-    RetrofitService service = RetrofitClient.getApiService(this);
+    private RetrofitService service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,8 @@ public class LoginWithAccountActivity extends AppCompatActivity {
         binding = ActivityLoginWithAccountBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        tokenManager =  TokenManager.getInstance(this);
+        tokenManager = TokenManager.getInstance(getApplicationContext());
+        service = RetrofitClient.getApiService(this);
         setupToolbar("로그인", false); //툴바 설정
 
         til_user_email = binding.tilUserEmail;
