@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         binding.kakaoLoginButton.setOnClickListener(v -> performKakaoLogin());
         binding.naverLoginButton.setOnClickListener(v -> performNaverLogin());
         binding.emailLoginButton.setOnClickListener(v -> performEmailLogin());
-        binding.startButton.setOnClickListener(v -> navigateToLogin());
+        binding.startButton.setOnClickListener(v -> navigateToStart());
         binding.loginButton.setOnClickListener(v -> navigateToLogin());
     }
 
@@ -118,6 +118,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private void navigateToLogin() {
         Intent intent = new Intent(this, LoginWithAccountActivity.class);
+        startActivity(intent);
+    }
+
+    private void navigateToStart() {
+        Intent intent = new Intent(this, ChatActivity.class);
         startActivity(intent);
     }
 
