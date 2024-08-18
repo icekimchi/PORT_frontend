@@ -97,5 +97,8 @@ dependencies {
     testCompileOnly("org.projectlombok:lombok:1.18.24")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.24")
 
+    //splash
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
     implementation ("androidx.recyclerview:recyclerview:1.3.1")
 }
