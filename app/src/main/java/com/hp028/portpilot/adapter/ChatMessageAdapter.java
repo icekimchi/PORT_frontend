@@ -8,21 +8,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.hp028.portpilot.R;
-import com.hp028.portpilot.api.chat.dto.ChatMessage;
+import com.hp028.portpilot.api.chat.dto.ChatMessageDto;
 import com.hp028.portpilot.api.chat.dto.SenderType;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.MessageViewHolder> {
 
-    private List<ChatMessage> messages;
+    private List<ChatMessageDto> messages;
 
-    public ChatMessageAdapter(List<ChatMessage> messages) {
+    public ChatMessageAdapter(List<ChatMessageDto> messages) {
         this.messages = messages;
     }
 
@@ -40,7 +38,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
-        ChatMessage message = messages.get(position);
+        ChatMessageDto message = messages.get(position);
         holder.bind(message);
     }
 
@@ -51,16 +49,16 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
 
     @Override
     public int getItemViewType(int position) {
-        ChatMessage message = messages.get(position);
+        ChatMessageDto message = messages.get(position);
         return message.getSenderType().ordinal();
     }
 
-    public void updateMessages(List<ChatMessage> newMessages) {
-        messages = newMessages;
+    public void updateMessages(List<ChatMessageDto> newMessages) {
+        messages = new ArrayList<>(newMessages);
         notifyDataSetChanged();
     }
 
-    public void addMessage(ChatMessage message) {
+    public void addMessage(ChatMessageDto message) {
         messages.add(message);
         notifyItemInserted(messages.size() - 1);
     }
@@ -75,20 +73,9 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
             timeText = itemView.findViewById(R.id.TimeStamp);
         }
 
-        void bind(ChatMessage message) {
+        void bind(ChatMessageDto message) {
             messageText.setText(message.getChatMessage());
-            timeText.setText(formatTimestamp(message.getTimestamp()));
-        }
-
-        private String formatTimestamp(LocalDateTime timestamp) {
-            DateTimeFormatter formatter = null;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                formatter = DateTimeFormatter.ofPattern("HH:mm");
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                return timestamp.format(formatter);
-            }
-            return "시간 에러";
+            timeText.setText(message.getTimestamp());
         }
     }
 }
