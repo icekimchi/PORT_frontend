@@ -1,9 +1,15 @@
 package com.hp028.portpilot;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -31,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private KakaoLoginManager kakaoLoginManager;
     private NaverLoginManager naverLoginManager;
+    private VideoView backgroundVideo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +45,18 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         Log.d(TAG, "> LoginActivity");
+
+        // 상태 바만 투명하게 설정
+        Window window = getWindow();
+        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+
+        // 상태 바만 투명하게 설정하고 내비게이션 바는 그대로 유지
+        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
+        // 비디오 배경 설정
+        setupBackgroundVideo();
 
         // 초기화
         kakaoLoginManager = KakaoLoginManager.getInstance(this);
@@ -48,9 +67,23 @@ public class LoginActivity extends AppCompatActivity {
         // 각 버튼에 대한 클릭 리스너 설정
         binding.kakaoLoginButton.setOnClickListener(v -> performKakaoLogin());
         binding.naverLoginButton.setOnClickListener(v -> performNaverLogin());
-        binding.emailLoginButton.setOnClickListener(v -> performEmailLogin());
+        binding.signupButton.setOnClickListener(v -> performEmailLogin());
         binding.startButton.setOnClickListener(v -> navigateToStart());
         binding.loginButton.setOnClickListener(v -> navigateToLogin());
+    }
+
+    private void setupBackgroundVideo() {
+        backgroundVideo = binding.backgroundVideo; // XML에서 VideoView의 id가 backgroundVideo라고 가정
+        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_bg_login);
+        backgroundVideo.setVideoURI(videoUri);
+
+        backgroundVideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setLooping(true);
+                backgroundVideo.start();
+            }
+        });
     }
 
     private void performKakaoLogin() {

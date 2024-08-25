@@ -10,14 +10,14 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <!-- white status bar -->
-        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <!-- Splash theme. -->
     <style name="test_Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/white</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_logo</item>
         <item name="windowSplashScreenAnimationDuration">1000</item>
         <item name="postSplashScreenTheme">@style/Base.Theme.PortPilot</item>
 
@@ -52,6 +52,8 @@
         <item name="android:textCursorDrawable">@color/deep_gray</item>
         <item name="boxStrokeWidth">1dp</item>
         <item name="boxStrokeWidthFocused">2dp</item>
+        <item name="boxBackgroundMode">outline</item>
+        <item name="boxBackgroundColor">@android:color/transparent</item>
     </style>
 
     <style name="Theme.PortPilot" parent="Base.Theme.PortPilot" >

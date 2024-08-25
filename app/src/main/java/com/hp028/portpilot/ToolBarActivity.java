@@ -21,7 +21,6 @@ public class ToolBarActivity extends AppCompatActivity {
 
     protected void setupToolbar(String title, boolean showMenu) {
         toolbar = findViewById(R.id.toolbar);
-        toolbar.setElevation(20);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             toolbarTitle = findViewById(R.id.bar_findText);
