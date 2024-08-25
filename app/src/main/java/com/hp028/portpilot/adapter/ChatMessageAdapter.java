@@ -63,6 +63,15 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
         notifyItemInserted(messages.size() - 1);
     }
 
+    public void removeMessage(ChatMessageDto message) {
+        int index = messages.indexOf(message);
+        if (index != -1) {
+            messages.remove(index);
+            notifyItemRemoved(index);
+        }
+    }
+
+
     static class MessageViewHolder extends RecyclerView.ViewHolder {
         private TextView messageText;
         private TextView timeText;
@@ -75,7 +84,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
 
         void bind(ChatMessageDto message) {
             messageText.setText(message.getChatMessage());
-            timeText.setText(message.getTimestamp());
+            timeText.setText(message.getTimestamp().substring(11,16));
         }
     }
 }

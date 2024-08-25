@@ -27,10 +27,12 @@ import com.hp028.portpilot.api.chat.dto.SendChatMessageResponse;
 import com.hp028.portpilot.api.chat.dto.SenderType;
 import com.hp028.portpilot.api.common.ApiResponse;
 import com.hp028.portpilot.databinding.FragmentChatBinding;
-import com.hp028.portpilot.databinding.ToolbarBinding;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,13 +40,10 @@ import retrofit2.Response;
 
 public class ChatFragment extends Fragment {
 
-
     private FragmentChatBinding binding;
     private static final String TAG = "ChatFragment";
     private RetrofitService service;
     private long chatRoomId;
-    private String chatRoomName;
-    private ToolbarBinding toolbar;
     private List<ChatMessageDto> chatMessages;
     private ChatMessageAdapter chatMessageAdapter;
 
@@ -55,10 +54,10 @@ public class ChatFragment extends Fragment {
         binding = FragmentChatBinding.inflate(inflater, container, false);
         service = RetrofitClient.getApiService(getContext());
 
+
         Bundle args = getArguments();
         if (args != null) {
             chatRoomId = args.getLong("chatRoomId", -1);
-            chatRoomName = args.getString("chatRoomName", "채팅방");
         }
 
         if (chatRoomId == -1) {
@@ -67,13 +66,15 @@ public class ChatFragment extends Fragment {
             return binding.getRoot();
         }
 
-        setupToolbar();
-        setupRecyclerView();
-        setupSendButton();
-
-        // Initialize the chatMessages list
+        // 채팅 메시지 리스트 초기화
         chatMessages = new ArrayList<>();
         chatMessageAdapter = new ChatMessageAdapter(chatMessages);
+
+        // RecyclerView 설정
+        setupRecyclerView();
+
+        // 전송 버튼 설정
+        setupSendButton();
 
         // 채팅 기록 불러오기
         loadChatMessages();
@@ -96,8 +97,13 @@ public class ChatFragment extends Fragment {
                         chatMessages.addAll(dtoList);
                     }
 
+                    for (ChatMessageDto list : dtoList) {
+                        Log.d(TAG, list.getChatMessage());
+                    }
+
                     // 어댑터에 변경사항 알리기
                     chatMessageAdapter.notifyDataSetChanged();
+                    binding.rvChatMessages.scrollToPosition(chatMessageAdapter.getItemCount() - 1);
                 } else {
                     Toast.makeText(getContext(), "채팅 기록을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
                 }
@@ -112,41 +118,51 @@ public class ChatFragment extends Fragment {
     }
 
     private void sendMessage(String message, long chatRoomId) {
+        binding.etMessageInput.setText("");
+        // 현재 시간을 가져와서 문자열로 변환 (yyyy-MM-ddTHH:mm:ss 형식 사용)
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+        String formattedTime = dateFormatter.format(new Date());
+
         // SendChatMessageRequest 객체 생성 및 요청 설정
         SendChatMessageRequest request = new SendChatMessageRequest();
         request.setChatMessage(message);
         request.setChatRoomId(chatRoomId);
 
+        // 사용자가 보낸 메시지를 채팅에 추가
+        ChatMessageDto userMessage = new ChatMessageDto(
+                message,
+                SenderType.USER,
+                formattedTime); // 포맷된 시간을 사용
+        chatMessageAdapter.addMessage(userMessage);
+
+        // "..." 표시를 서버 응답 전까지 보여줌
+        ChatMessageDto waitingMessage = new ChatMessageDto(
+                "...",
+                SenderType.SERVER,
+                formattedTime); // Date를 포맷한 시간을 사용
+        chatMessageAdapter.addMessage(waitingMessage);
+
+        // 리사이클러뷰를 최신 메시지로 스크롤
+        binding.rvChatMessages.scrollToPosition(chatMessageAdapter.getItemCount() - 1);
+
         // 서버에 메시지 전송 요청
         service.sendChatMessage(request).enqueue(new Callback<ApiResponse<SendChatMessageResponse>>() {
             @Override
             public void onResponse(Call<ApiResponse<SendChatMessageResponse>> call, Response<ApiResponse<SendChatMessageResponse>> response) {
+                chatMessageAdapter.removeMessage(waitingMessage);
+
                 if (response.isSuccessful() && response.body() != null) {
                     SendChatMessageResponse sendChatMessageResponse = response.body().getBody();
                     Log.d(TAG, "응답 :" + sendChatMessageResponse);
 
                     // 메시지 전송 성공 처리
-                    // 서버로부터 반환된 메시지 처리
-                    ChatMessageDto userMessage = new ChatMessageDto(
-                            sendChatMessageResponse.getUserMessage(),
-                            SenderType.USER,
-                            sendChatMessageResponse.getUserMessageTime());
                     ChatMessageDto serverMessage = new ChatMessageDto(
                             sendChatMessageResponse.getServerMessage(),
                             SenderType.SERVER,
                             sendChatMessageResponse.getServerMessageTime());
-
-                    if (userMessage != null) {
-                        chatMessages.add(userMessage);
-                        chatMessageAdapter.notifyItemInserted(chatMessages.size() - 1);
-                    }
-                    if (serverMessage != null) {
-                        chatMessages.add(serverMessage);
-                        chatMessageAdapter.notifyItemInserted(chatMessages.size() - 1);
-                    }
+                    chatMessageAdapter.addMessage(serverMessage);
 
                     // 입력창 초기화
-                    binding.etMessageInput.setText("");
 
                     // 리사이클러뷰를 최신 메시지로 스크롤
                     binding.rvChatMessages.scrollToPosition(chatMessages.size() - 1);
@@ -157,6 +173,9 @@ public class ChatFragment extends Fragment {
 
             @Override
             public void onFailure(Call<ApiResponse<SendChatMessageResponse>> call, Throwable t) {
+                Log.e(TAG, t.getMessage());
+                chatMessageAdapter.removeMessage(waitingMessage);
+                binding.etMessageInput.setText("");
                 Toast.makeText(getContext(), "메시지 전송 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
             }
         });
@@ -164,10 +183,10 @@ public class ChatFragment extends Fragment {
 
 
     private void setupRecyclerView() {
-        ChatMessageAdapter chatMessageAdapter = new ChatMessageAdapter(new ArrayList<>());
-        binding.rvChatMessages.setAdapter(chatMessageAdapter);
+        binding.rvChatMessages.setAdapter(chatMessageAdapter);  // chatMessageAdapter를 RecyclerView에 연결
         binding.rvChatMessages.setLayoutManager(new LinearLayoutManager(getContext()));
     }
+
 
     private void setupSendButton() {
         binding.btnSend.setOnClickListener(new View.OnClickListener() {
@@ -183,29 +202,5 @@ public class ChatFragment extends Fragment {
                 sendMessage(message, chatRoomId);
             }
         });
-    }
-
-    private void setupToolbar() {
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        if (activity != null) {
-            toolbar = binding.chatroomToolbar;
-
-            activity.setSupportActionBar(toolbar.toolbar);
-            ActionBar actionBar = activity.getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.setDisplayShowTitleEnabled(false);
-                actionBar.setDisplayHomeAsUpEnabled(true);
-                actionBar.setDisplayShowHomeEnabled(true);
-            }
-            TextView toolbarTitle = binding.chatroomToolbar.barFindText;
-            if (toolbarTitle != null) {
-                toolbarTitle.setText(chatRoomName);
-            }
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        return super.onOptionsItemSelected(item);
     }
 }

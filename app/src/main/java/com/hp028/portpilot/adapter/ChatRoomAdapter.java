@@ -6,17 +6,20 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.hp028.portpilot.api.chat.dto.GetChatRoomResponse;
+import com.hp028.portpilot.api.chat.dto.ChatMessageDto;
+import com.hp028.portpilot.api.chat.dto.ChatRoomWithLastMessageResponse;
 import com.hp028.portpilot.databinding.ItemChatRoomBinding;
 
 import java.util.List;
 
 public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ChatRoomViewHolder> {
-    private List<GetChatRoomResponse.GetChatRoomResponseBody> chatRoomList;
+    private List<ChatRoomWithLastMessageResponse.ChatRoomResponse> chatRoomList;
+    private List<ChatMessageDto> lastMessageList;
     private OnChatRoomClickListener listener;
 
-    public ChatRoomAdapter(List<GetChatRoomResponse.GetChatRoomResponseBody> chatRoomList, OnChatRoomClickListener listener) {
+    public ChatRoomAdapter(List<ChatRoomWithLastMessageResponse.ChatRoomResponse> chatRoomList, List<ChatMessageDto> lastMessageList,  OnChatRoomClickListener listener) {
         this.chatRoomList = chatRoomList;
+        this.lastMessageList = lastMessageList;
         this.listener = listener;
     }
 
@@ -29,9 +32,43 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ChatRo
 
     @Override
     public void onBindViewHolder(@NonNull ChatRoomViewHolder holder, int position) {
-        GetChatRoomResponse.GetChatRoomResponseBody chatRoom = chatRoomList.get(position);
+        ChatRoomWithLastMessageResponse.ChatRoomResponse chatRoom = chatRoomList.get(position);
+        ChatMessageDto chatMessage = lastMessageList.get(position);
+
+        // 채팅 메시지의 초기값을 빈 문자열로 설정
+        String shortMessage = getShortMessage(chatMessage);
+        String timeStamp = getTimeStamp(chatMessage);
+
         holder.binding.chatRoomName.setText(chatRoom.getRoomName());
+        holder.binding.lastMessage.setText(shortMessage);
+        holder.binding.lastMessageDate.setText(timeStamp);
         holder.itemView.setOnClickListener(v -> listener.onChatRoomClick(chatRoom));
+    }
+
+    @NonNull
+    private static String getShortMessage(ChatMessageDto chatMessage) {
+        String shortMessage = "";
+
+        if (chatMessage != null && chatMessage.getChatMessage() != null) {
+            // 채팅 메시지를 20자까지 자르고, 그 뒤에 "..."을 추가
+            shortMessage = chatMessage.getChatMessage();
+            if (shortMessage.length() > 20) {
+                shortMessage = shortMessage.substring(0, 20) + "...";
+            }
+        }
+        return shortMessage;
+    }
+
+    @NonNull
+    private static String getTimeStamp(ChatMessageDto chatMessage) {
+        String timestamp = "";
+
+        if (chatMessage != null && chatMessage.getChatMessage() != null) {
+            if (chatMessage.getTimestamp() != null) {
+                timestamp = chatMessage.getTimestamp().substring(11, 16);
+            }
+        }
+        return timestamp;
     }
 
     @Override
@@ -49,6 +86,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ChatRo
     }
 
     public interface OnChatRoomClickListener {
-        void onChatRoomClick(GetChatRoomResponse.GetChatRoomResponseBody chatRoom);
+        void onChatRoomClick(ChatRoomWithLastMessageResponse.ChatRoomResponse chatRoom);
     }
+
 }

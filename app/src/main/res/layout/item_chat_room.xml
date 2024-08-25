@@ -3,8 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:backgroundTint="@color/white"
-    android:padding="25dp">
+    android:background="@drawable/bg_chatroom"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/chatRoomIcon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/default_chat_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <TextView
         android:id="@+id/chatRoomName"
@@ -12,27 +21,31 @@
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:textColor="@color/black"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textStyle="bold"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toEndOf="@id/chatRoomIcon"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/chatRoomDelete" />
+        app:layout_constraintEnd_toStartOf="@id/lastMessageDate" />
 
     <TextView
-        android:id="@+id/chatRoomDescription"
+        android:id="@+id/lastMessage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="14sp"
-        android:textColor="@color/deep_gray"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/gray"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toEndOf="@id/chatRoomIcon"
         app:layout_constraintTop_toBottomOf="@id/chatRoomName"
-        app:layout_constraintEnd_toStartOf="@id/chatRoomDelete" />
+        app:layout_constraintEnd_toStartOf="@id/lastMessageDate" />
 
-    <ImageView
-        android:id="@+id/chatRoomDelete"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@drawable/btn_chatroom_delete"
+    <TextView
+        android:id="@+id/lastMessageDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="@color/gray"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

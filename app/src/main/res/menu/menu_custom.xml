@@ -5,13 +5,13 @@
     <item
         android:id="@+id/action_search"
         android:title="검색"
-        android:icon="@drawable/menu_search"
+        android:icon="@drawable/ic_launcher_monochrome"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_write"
         android:title="글쓰기"
-        android:icon="@drawable/menu_info"
+        android:icon="@drawable/logo_info"
         app:showAsAction="ifRoom" />
 
 </menu>
