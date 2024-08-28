@@ -1,13 +1,21 @@
 package com.hp028.portpilot;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.TextView;
+import android.widget.VideoView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.hp028.portpilot.adapter.ChatRoomAdapter;
 import com.hp028.portpilot.api.RetrofitClient;
 import com.hp028.portpilot.api.RetrofitService;
@@ -42,10 +50,22 @@ public class ChatRoomActivity extends ToolBarActivity {
         setContentView(binding.getRoot());
         Log.d(TAG, "> ChatRoomActivity");
 
-        setupToolbar("PortMIS", true); // 툴바 설정
+        setupToolbar("채팅방", false); // 툴바 설정
+
+
+        // 상태 바만 투명하게 설정
+        Window window = getWindow();
+        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+
+        // 상태 바만 투명하게 설정하고 내비게이션 바는 그대로 유지
+        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
         chatRoomList = new ArrayList<>();
         lastMessagelist = new ArrayList<>();
         adapter = new ChatRoomAdapter(chatRoomList, lastMessagelist, this::onChatRoomSelected);
+        adapter.setOnChatRoomLongClickListener(this::onChatRoomLongClick);
         binding.recyclerView.setAdapter(adapter);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -136,5 +156,20 @@ public class ChatRoomActivity extends ToolBarActivity {
         intent.putExtra("roomId", chatRoom.getId());
         intent.putExtra("roomName", chatRoom.getRoomName());
         startActivity(intent);
+    }
+
+    private boolean onChatRoomLongClick(ChatRoomWithLastMessageResponse.ChatRoomResponse chatRoom, int position) {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.layout_chat_summary, null);
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        TextView summaryTitle = bottomSheetView.findViewById(R.id.summaryTitle);
+        TextView summaryContent = bottomSheetView.findViewById(R.id.summaryContent);
+
+        summaryTitle.setText(chatRoom.getRoomName() + " 요약");
+        summaryContent.setText("여기에 채팅방 요약 내용이 들어갑니다.");
+
+        bottomSheetDialog.show();
+        return true;
     }
 }

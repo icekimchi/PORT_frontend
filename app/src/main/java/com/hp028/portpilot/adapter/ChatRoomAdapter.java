@@ -1,6 +1,7 @@
 package com.hp028.portpilot.adapter;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ChatRo
     private List<ChatRoomWithLastMessageResponse.ChatRoomResponse> chatRoomList;
     private List<ChatMessageDto> lastMessageList;
     private OnChatRoomClickListener listener;
+    private OnChatRoomLongClickListener longClickListener;
 
     public ChatRoomAdapter(List<ChatRoomWithLastMessageResponse.ChatRoomResponse> chatRoomList, List<ChatMessageDto> lastMessageList,  OnChatRoomClickListener listener) {
         this.chatRoomList = chatRoomList;
@@ -43,6 +45,17 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ChatRo
         holder.binding.lastMessage.setText(shortMessage);
         holder.binding.lastMessageDate.setText(timeStamp);
         holder.itemView.setOnClickListener(v -> listener.onChatRoomClick(chatRoom));
+        holder.itemView.setOnLongClickListener(v -> {
+            boolean isExpanded = holder.binding.summaryLayout.getVisibility() == View.VISIBLE;
+            holder.binding.summaryLayout.setVisibility(isExpanded ? View.GONE : View.VISIBLE);
+
+            if (!isExpanded) {
+                holder.binding.summaryTitle.setText(chatRoom.getRoomName() + " 요약");
+                holder.binding.summaryContent.setText("여기에 채팅방 요약 내용이 들어갑니다.");
+            }
+
+            return true;
+        });
     }
 
     @NonNull
@@ -89,4 +102,11 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ChatRo
         void onChatRoomClick(ChatRoomWithLastMessageResponse.ChatRoomResponse chatRoom);
     }
 
+    public interface OnChatRoomLongClickListener {
+        boolean onChatRoomLongClick(ChatRoomWithLastMessageResponse.ChatRoomResponse chatRoom, int position);
+    }
+
+    public void setOnChatRoomLongClickListener(OnChatRoomLongClickListener listener) {
+        this.longClickListener = listener;
+    }
 }
