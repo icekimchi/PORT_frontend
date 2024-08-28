@@ -1,33 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:clipToPadding="false">
 
-    <include
-        android:id="@+id/chatroom_toolbar"
-        layout="@layout/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <include
-        layout="@layout/guideline_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white" />
-
     <ImageView
-        android:id="@+id/addChatRoomButton"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/btn_chatroom_add" />
+        android:id="@+id/chatroom_backgroundImg"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/banner_img_chatroom"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/portmisSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="해운항만물류정보시스템"
+        android:textSize="18sp"
+        android:textColor="@color/deep_gray"
+        app:layout_constraintTop_toTopOf="@id/chatroom_backgroundImg"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="60dp"
+        android:layout_marginStart="16dp"
+        tools:ignore="HardcodedText" />
+
+    <!-- PORT-MIS 텍스트 -->
+    <TextView
+        android:id="@+id/portmisTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PORT-MIS"
+        android:textSize="36sp"
+        android:textColor="@color/deep_blue"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/portmisSubtitle"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        tools:ignore="HardcodedText" />
+
+    <!-- LinearLayout을 ImageView 아래로 위치 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/chatroom_backgroundImg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/white" />
+
+        <ImageView
+            android:id="@+id/addChatRoomButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/btn_chatroom_add" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
